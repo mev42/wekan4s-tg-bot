@@ -1,0 +1,8 @@
+.idea
+.bsp
+target
+project/project
+project/target
+project/.bloop
+project/metals.sbt
+src/main/resources/application.conf

@@ -1,0 +1,1 @@
+botWasStarted=Bot was started!
