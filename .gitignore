@@ -5,4 +5,4 @@ project/project
 project/target
 project/.bloop
 project/metals.sbt
-src/main/resources/application.conf
+src/main/resources/app.conf

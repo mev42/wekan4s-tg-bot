@@ -8,17 +8,12 @@ import com.typesafe.config.ConfigFactory
 
 object Config {
 
-  private val conf = ConfigFactory.load()
+  private val conf = ConfigFactory.load("app.conf")
 
   object wecan {
     val url: String      = conf.getString("wekan.url")
     val email: String    = conf.getString("wekan.email")
     val password: String = conf.getString("wekan.password")
-    val connectionTimeout: FiniteDuration = {
-      val timeout = conf.getDuration("wekan.connectionTimeout")
-
-      FiniteDuration.apply(timeout.getSeconds, TimeUnit.SECONDS)
-    }
   }
 
   object tg {
@@ -28,7 +23,7 @@ object Config {
 
   object app {
     val timeout: FiniteDuration = {
-      val duration = conf.getDuration("app.timeout")
+      val duration = conf.getDuration("app.checkingInterval")
 
       FiniteDuration.apply(duration.getSeconds, TimeUnit.SECONDS)
     }

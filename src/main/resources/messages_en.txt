@@ -1,1 +1,8 @@
 botWasStarted=Bot was started!
+board=Board
+list=List
+card=Card
+comment=Comment
+cancel=Cancel
+chooseABoard=Choose a board
+loading=Loading

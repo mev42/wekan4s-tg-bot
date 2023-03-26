@@ -1,1 +1,8 @@
 botWasStarted=Бот запущен!
+board=Доска
+list=Список
+card=Карточка
+comment=Комментарий
+cancel=Отмена
+choose a board=Выберите доску
+loading=Загрузка досок...

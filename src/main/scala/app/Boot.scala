@@ -24,20 +24,11 @@ import sttp.client3.asynchttpclient.cats.AsyncHttpClientCatsBackend
 
 object Boot extends IOApp {
 
-  def prettyMsg(rwd: RawWekanData): String = {
-    s"""
-       |доска: ${rwd.boardTitle}
-       |лист: ${rwd.listTitle}
-       |карточка: ${rwd.cardTitle.getOrElse("-")}
-       |комментарий: ${rwd.comment.getOrElse("-")}
-       |""".stripMargin
-  }
-
   def notifier(ww: WekanWorker[IO], boards: List[GetBoardResponse], tg: TelegramClient[IO]): IO[Unit] = {
     for {
       _    <- IO.sleep(Config.app.timeout)
       rwds <- ww.checkAndUpdate(boards.map(_._id))
-      _    <- rwds.traverse(rwd => sendText[IO](Config.tg.groupId, prettyMsg(rwd))(tg))
+      _    <- rwds.traverse(rwd => sendText[IO](Config.tg.groupId, TextMsg.rawWekanData2msg(rwd))(tg))
     } yield ()
   }
 
@@ -80,12 +71,12 @@ object Boot extends IOApp {
 
   def processBoard[F[_]: TelegramClient: Async](chat: Chat, wekan: Wekan[F]): Scenario[F, GetBoardResponse] = {
     for {
-      _      <- Scenario.eval(chat.send("Загрузка досок..."))
+      _      <- Scenario.eval(chat.send(TextMsg.loading))
       boards <- Scenario.eval(wekan.Boards.getPublicBoards)
       boardsKeyboards = ReplyKeyboardMarkup(keyboard = boards.map { board =>
         Seq(KeyboardButton(board.title))
       })
-      _         <- Scenario.eval(chat.send("Выберите доску", keyboard = Keyboard.Reply(boardsKeyboards)))
+      _         <- Scenario.eval(chat.send(TextMsg.chooseABoard, keyboard = Keyboard.Reply(boardsKeyboards)))
       boardName <- Scenario.expect(text)
       board = boards.find(_.title == boardName).getOrElse(boards.head)
       _ <- Scenario.eval(chat.send(s"Доска: ${board.title}"))
